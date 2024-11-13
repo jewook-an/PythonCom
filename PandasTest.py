@@ -4,7 +4,8 @@ import numpy as np
 # 컴포넌트 초기화
 pandas_utils = PandasCm.CommonPandas()
 
-# CSV 파일 읽기
+# CSV 파일 읽기 >> Try~Catch 로 못읽을시 Error 처리
+# def read_data(self, file_path: Union[str, Path], file_type: str, **kwargs) -> pd.DataFrame:
 df = pandas_utils.read_data("data.csv", "csv")
 
 # 데이터 클리닝
