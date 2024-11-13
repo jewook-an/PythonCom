@@ -1,5 +1,8 @@
+from common import PandasCm
+import numpy as np
+
 # 컴포넌트 초기화
-pandas_utils = CommonPandas()
+pandas_utils = PandasCm.CommonPandas()
 
 # CSV 파일 읽기
 df = pandas_utils.read_data("data.csv", "csv")
@@ -20,14 +23,13 @@ transformed_df = pandas_utils.data_transformation(
 # 데이터 분석
 analysis_results = pandas_utils.data_analysis(transformed_df)
 
+"""
+**kwargs 는 키워드 인자(keyword arguments)를 딕셔너리 형태로 받는 Python 특별 매개변수.
+Pandas 내 활용 실제예제 참고 : 예로, CommonPandas 클래스의 여러 메서드에서 **kwargs의 사용예제를 확인.
+"""
 
-`**kwargs`는 키워드 인자(keyword arguments)를 딕셔너리 형태로 받는 Python의 특별한 매개변수입니다. Pandas에서 이를 활용하는 실제 예제를 통해 설명해드리겠습니다.
-
-예를 들어, CommonPandas 클래스의 여러 메서드에서 `**kwargs`가 어떻게 사용되는지 살펴보겠습니다:
-
-1. read_data 메서드 사용 예제:
-```python
-pandas_utils = CommonPandas()
+# 1. read_data 메서드 사용 예제:
+# pandas_utils = CommonPandas()
 
 # 기본적인 CSV 읽기
 df1 = pandas_utils.read_data("data.csv", "csv")
@@ -52,10 +54,8 @@ df3 = pandas_utils.read_data(
     header=None,                   # 헤더 없음
     names=['Col1', 'Col2', 'Col3'] # 열 이름 직접 지정
 )
-```
 
-2. data_cleaning 메서드 사용 예제:
-```python
+# 2. data_cleaning 메서드 사용 예제:
 # 기본적인 데이터 클리닝
 clean_df1 = pandas_utils.data_cleaning(
     df, 
@@ -80,10 +80,8 @@ clean_df2 = pandas_utils.data_cleaning(
         'thresh': 3                     # 최소 3개 이상의 유효값이 있는 행만 유지
     }
 )
-```
 
-3. data_transformation 메서드 사용 예제:
-```python
+# 3. data_transformation 메서드 사용 예제:
 # 기본적인 데이터 변환
 trans_df1 = pandas_utils.data_transformation(
     df,
@@ -102,10 +100,8 @@ trans_df2 = pandas_utils.data_transformation(
         'utc': True                  # UTC 시간으로 변환
     }
 )
-```
 
-4. data_filtering 메서드 사용 예제:
-```python
+# 4. data_filtering 메서드 사용 예제:
 # 복잡한 필터링 조건 지정
 filtered_df = pandas_utils.data_filtering(
     df,
@@ -124,10 +120,8 @@ filtered_df = pandas_utils.data_filtering(
         }
     }
 )
-```
 
-5. save_data 메서드 사용 예제:
-```python
+# 5. save_data 메서드 사용 예제:
 # CSV 저장 시 kwargs 활용
 pandas_utils.save_data(
     df,
@@ -149,11 +143,12 @@ pandas_utils.save_data(
     freeze_panes=(1,0),        # 첫 행 고정
     engine='openpyxl'         # Excel 엔진 지정
 )
-```
 
-`**kwargs`의 장점:
-1. 유연성: 함수를 수정하지 않고도 다양한 옵션을 전달할 수 있습니다.
-2. 확장성: 새로운 옵션이 필요할 때 함수 수정 없이 바로 사용할 수 있습니다.
-3. 코드 재사용성: 다양한 상황에서 같은 함수를 다르게 활용할 수 있습니다.
+"""
+**kwargs의 장점:
+1. 유연성 : 함수를 수정 하지않고 다양한 옵션 전달 가능.
+2. 확장성 : 새로운 옵션 필요시 함수 수정 없이 사용 가능.
+3. 코드재사용성 : 다양한 상황에서 같은 함수를 다르게 활용이 가능함.
 
-실제 사용 시에는 각 메서드의 문서화된 옵션들을 참고하여 필요한 kwargs를 전달하면 됩니다. 특정 기능에 대해 더 자세한 예제가 필요하시다면 말씀해 주세요!​​​​​​​​​​​​​​​​
+실사용시 각 메서드의 문서화된 옵션 참고해 필요한 kwargs를 전달 하면 됨.
+"""
