@@ -11,6 +11,7 @@
 7. [PyTest](#7-PyTest)
 8. [Celery](#8-Celery)
 9. [Redis-py](#9-Redis-py)
+
 10.[Pillow (PIL)](#10-Pillow-Pil)
 
 파이썬의 가장 유용하고 널리 사용되는 라이브러리 10가지를 선정해드리겠습니다:
@@ -404,6 +405,5 @@
 3. 필요한 파라미터의 조정.
 4. 스크립트를 실행.
 
-<div align="right">
 [목차로](#목차)
-</div>
+
