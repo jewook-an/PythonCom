@@ -3,15 +3,15 @@
 ### 목차
 
 1. [NumPy](#1-NumPy)
-2. Pandas
-3. Requests
-4. SQLAlchemy
-5. FastAPI
-6. Matplotlib
-7. PyTest
-8. Celery
-9. Redis-py
-10. Pillow (PIL)
+2. [Pandas](#2-Pandas)
+3. [Requests](#3-Requests)
+4. [SQLAlchemy](#4-SQLAlchemy)
+5. [FastAPI](#5-FastAPI)
+6. [Matplotlib](#6-Matplotlib)
+7. [PyTest](#7-PyTest)
+8. [Celery](#8-Celery)
+9. [Redis-py](#9-Redis-py)
+10.[Pillow (PIL)](#10-Pillow-Pil)
 
 파이썬의 가장 유용하고 널리 사용되는 라이브러리 10가지를 선정해드리겠습니다:
 
@@ -71,9 +71,7 @@
   4. 데이터 결합(merge, join, concat) 기능
   5. 문자열 처리 기능
 
-<div align="right">
 [목차로](#목차)
-</div>
 
 #### 3. Requests
 - 특징: HTTP 통신을 위한 라이브러리
@@ -110,9 +108,8 @@
   3. 비동기 요청 지원
   4. 특정 API에 맞춘 커스텀 메소드 추가​​​​​​​​​​​​​​​​
 
-<div align="right">
 [목차로](#목차)
-</div>
+
 #### 4. SQLAlchemy
 - 특징: SQL 데이터베이스 ORM
 - 주요 기능:
@@ -150,9 +147,8 @@
   4. 캐싱 메커니즘
   5. 더 세밀한 쿼리 빌더 기능​​​​​​​​​​​​​​​​
 
-<div align="right">
 [목차로](#목차)
-</div>
+
 #### 5. FastAPI
 - 특징: 현대적인 웹 API 프레임워크
 - 주요 기능:
@@ -197,9 +193,8 @@
   6. 레이트 리미팅
   7. 데이터 검증 추가​​​​​​​​​​​​​​​​
 
-<div align="right">
 [목차로](#목차)
-</div>
+
 #### 6. Matplotlib
 - 특징: 데이터 시각화 라이브러리
 - 주요 기능:
@@ -249,9 +244,8 @@
   6. 커스텀 테마 지원
   7. 통계 분석 기능 통합​​​​​​​​​​​​​​​​
 
-<div align="right">
 [목차로](#목차)
-</div>
+
 #### 7. PyTest
 - 특징: 테스트 프레임워크
 - 주요 기능:
@@ -284,9 +278,9 @@
      - 커스텀 리포터로 결과 관리
      - 모듈화된 구조
 
-<div align="right">
+
 [목차로](#목차)
-</div>
+
 #### 8. Celery
 - 특징: 분산 태스크 큐
 - 주요 기능:
@@ -327,9 +321,9 @@
   4. 성능 측정과 최적화
   5. 확장 가능한 구조
 
-<div align="right">
+
 [목차로](#목차)
-</div>
+
 #### 9. Redis-py
 - 특징: Redis 클라이언트 라이브러리
 - 주요 기능:
@@ -370,9 +364,9 @@
   6. 효율적인 속도 제한
   7. 상세한 모니터링
 
-<div align="right">
+
 [목차로](#목차)
-</div>
+
 #### 10. Pillow (PIL)
 - 특징: 이미지 처리 라이브러리
 - 주요 기능:
