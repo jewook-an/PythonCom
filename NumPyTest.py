@@ -1,7 +1,8 @@
+from common import NumpyCm
 import numpy as np
 
 # 컴포넌트 초기화
-numpy_utils = CommonNumpy()
+numpy_utils = NumpyCm.CommonNumpy()
 
 # 배열 생성
 array1 = numpy_utils.create_array([1, 2, 3, 4, 5])
@@ -9,9 +10,11 @@ array2 = numpy_utils.create_array([6, 7, 8, 9, 10])
 
 # 행렬 연산
 result = numpy_utils.matrix_operations(array1, array2, 'add')
+print(result)
 
 # 통계 분석
 stats = numpy_utils.statistical_analysis(array1)
+print(stats)
 
 # NumPy의 기본적인 통계 및 수학 함수들을 설명해드리겠습니다. 이 함수들은 데이터 분석에서 매우 자주 사용되는 핵심 기능들입니다.
 # 1. 기본 통계 함수들:
