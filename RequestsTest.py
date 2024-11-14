@@ -1,4 +1,4 @@
-from RequestCm import HTTPClient 
+from common import RequestCm
 
 # 클라이언트 초기화
 client = HTTPClient('https://api.example.com')
