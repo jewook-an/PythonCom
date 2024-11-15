@@ -1,7 +1,7 @@
-from common import RequestCm
+from common import RequestsCm
 
 # 클라이언트 초기화
-client = RequestCm.HTTPClient('http://data.ex.co.kr/openapi/safeDriving/forecast?key=test&type=json')
+client = RequestsCm.HTTPClient('http://data.ex.co.kr/openapi/safeDriving/forecast?key=test&type=json')
 
 # 기본 인증 설정
 client.set_auth(('username', 'password'))
