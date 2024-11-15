@@ -34,7 +34,8 @@ class DatabaseManager:
         finally:
             session.close()
 
-    def add_item(self, item: Base) -> Optional[Base]:
+    #def add_item(self, item: Base) -> Optional[Base]:
+    def add_item(self, item: Any) -> Optional[Any]:
         try:
             with self.get_session() as session:
                 session.add(item)
@@ -45,7 +46,8 @@ class DatabaseManager:
             self.logger.error(f"Failed to add item: {str(e)}")
             raise
 
-    def add_items(self, items: List[Base]) -> List[Base]:
+    #def add_items(self, items: List[Base]) -> List[Base]:
+    def add_items(self, items: List[Any]) -> List[Any]:
         try:
             with self.get_session() as session:
                 session.add_all(items)
@@ -57,7 +59,8 @@ class DatabaseManager:
             self.logger.error(f"Failed to add items in bulk: {str(e)}")
             raise
 
-    def get_by_id(self, model: Type[Base], id: Any) -> Optional[Base]:
+    #def get_by_id(self, model: Type[Base], id: Any) -> Optional[Base]:
+    def get_by_id(self, model: Type[Any], id: Any) -> Optional[Any]:
         try:
             with self.get_session() as session:
                 return session.query(model).filter(model.id == id).first()
