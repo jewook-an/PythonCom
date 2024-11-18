@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 import io
 
-class CommonPandas:
+class PandasCm:
     """
     Pandas 관련 공통 기능을 제공하는 유틸리티 클래스
     """

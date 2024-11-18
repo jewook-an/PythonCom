@@ -2,7 +2,7 @@ import numpy as np
 from typing import Union, List, Tuple, Optional
 import logging
 
-class NumpyCm:
+class NumpyClass:
     """
     NumPy 관련 공통 기능을 제공하는 유틸리티 클래스
     """

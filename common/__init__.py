@@ -1,10 +1,10 @@
-import common.NumpyCm
-import common.PandasCm
-import common.RequestsCm
-import common.SQLalchemyCm
-import common.FastapiCm
-import common.MatplotlibCm
-import common.PyTestCm
-import common.CeleryCm
-import common.RedispyCm
-import common.PillowCm
+#from .NumpyCm import NumpyClass
+#from .PandasCm import PandasCm
+#from .RequestsCm import HTTPClient
+#from .SQLalchemyCm import DatabaseManager
+#from .FastapiCm import FastapiCm
+#from .MatplotlibCm import MatplotlibCm
+#from .PyTestCm import PyTestCm
+#from .CeleryCm import CeleryCm
+#from .RedispyCm import RedispyCm
+#from .PillowCm import PillowCm
