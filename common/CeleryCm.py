@@ -146,7 +146,7 @@ class TaskMonitor:
     def get_task_info(self, task_id: str) -> Dict[str, Any]:
         return self.redis_manager.get_task_status(task_id)
     
-    def get_active_tasks(self) -> List[str]:
+    def get_active_tasks(self) -> list[str]:
         return [k.decode().split(':')[1] for k in 
                 self.redis_manager.redis_client.keys('task_status:*')]
 
