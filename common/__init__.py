@@ -1,5 +1,5 @@
-#from .NumpyCm import NumpyClass
-#from .PandasCm import PandasCm
+from .NumpyCm import NumpyClass
+from .PandasCm import PandasCm
 #from .RequestsCm import HTTPClient
 #from .SQLalchemyCm import DatabaseManager
 #from .FastapiCm import FastapiCm

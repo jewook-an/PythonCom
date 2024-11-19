@@ -2,7 +2,7 @@ from common import PandasCm
 import numpy as np
 
 # 컴포넌트 초기화
-pandas_utils = PandasCm.CommonPandas()
+pandas_utils = PandasCm()
 
 # CSV 파일 읽기 >> Try~Catch 로 못읽을시 Error 처리
 # def read_data(self, file_path: Union[str, Path], file_type: str, **kwargs) -> pd.DataFrame:

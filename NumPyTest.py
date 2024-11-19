@@ -1,8 +1,8 @@
-from common import NumpyCm
+from common import NumpyClass
 import numpy as np
 
 # 컴포넌트 초기화
-numpy_utils = NumpyCm.NumpyClass()
+numpy_utils = NumpyClass()
 
 # 배열 생성
 array1 = numpy_utils.create_array([1, 2, 3, 4, 5])
