@@ -6,7 +6,8 @@ pandas_utils = PandasCm()
 
 # CSV 파일 읽기 >> Try~Catch 로 못읽을시 Error 처리
 # def read_data(self, file_path: Union[str, Path], file_type: str, **kwargs) -> pd.DataFrame:
-df = pandas_utils.read_data("data.csv", "csv")
+# df = pd.read_csv(PATH , encoding='cp949')
+df = pandas_utils.read_data("port.csv", "csv", encoding='cp949')
 
 # 데이터 클리닝
 clean_df = pandas_utils.data_cleaning(df, 
@@ -17,8 +18,9 @@ clean_df = pandas_utils.data_cleaning(df,
 # 데이터 변환
 transformed_df = pandas_utils.data_transformation(
     clean_df,
-    columns=['column1', 'column2'],
-    operation='normalize'
+    # columns=['column1', 'column2'],
+    columns=['Source', 'IP'],
+    operation='encode_categorical'
 )
 
 # 데이터 분석
@@ -33,20 +35,22 @@ Pandas 내 활용 실제예제 참고 : 예로, CommonPandas 클래스의 여러
 # pandas_utils = CommonPandas()
 
 # 기본적인 CSV 읽기
-df1 = pandas_utils.read_data("data.csv", "csv")
+df1 = pandas_utils.read_data("port.csv", "csv", encoding='cp949')
 
 # kwargs를 사용한 다양한 옵션 지정
 df2 = pandas_utils.read_data(
-    "data.csv", 
+    "port.csv", 
     "csv",
-    encoding='utf-8',                # 인코딩 지정
+    #encoding='utf-8',                # 인코딩 지정
+    encoding='cp949',                # 인코딩 지정
     sep=';',                        # 구분자 지정
     skiprows=2,                     # 처음 2줄 건너뛰기
-    usecols=['name', 'age', 'city'], # 특정 열만 읽기
+    #usecols=['name', 'age', 'city'], # 특정 열만 읽기
     na_values=['NA', 'missing']     # NA로 처리할 값들 지정
 )
 
 # Excel 파일 읽기 시 kwargs 활용
+"""
 df3 = pandas_utils.read_data(
     "data.xlsx",
     "excel",
@@ -55,7 +59,7 @@ df3 = pandas_utils.read_data(
     header=None,                   # 헤더 없음
     names=['Col1', 'Col2', 'Col3'] # 열 이름 직접 지정
 )
-
+"""
 # 2. data_cleaning 메서드 사용 예제:
 # 기본적인 데이터 클리닝
 clean_df1 = pandas_utils.data_cleaning(
@@ -64,6 +68,7 @@ clean_df1 = pandas_utils.data_cleaning(
 )
 
 # kwargs를 사용한 상세 옵션 지정
+"""
 clean_df2 = pandas_utils.data_cleaning(
     df,
     operations=['remove_duplicates', 'fill_na', 'drop_na', 'reset_index'],
@@ -81,16 +86,19 @@ clean_df2 = pandas_utils.data_cleaning(
         'thresh': 3                     # 최소 3개 이상의 유효값이 있는 행만 유지
     }
 )
-
+"""
 # 3. data_transformation 메서드 사용 예제:
 # 기본적인 데이터 변환
+"""
 trans_df1 = pandas_utils.data_transformation(
     df,
     columns=['age', 'income'],
     operation='normalize'
 )
+"""
 
 # kwargs를 사용한 날짜 변환 옵션
+"""
 trans_df2 = pandas_utils.data_transformation(
     df,
     columns=['date_column'],
@@ -101,9 +109,11 @@ trans_df2 = pandas_utils.data_transformation(
         'utc': True                  # UTC 시간으로 변환
     }
 )
+"""
 
 # 4. data_filtering 메서드 사용 예제:
 # 복잡한 필터링 조건 지정
+"""
 filtered_df = pandas_utils.data_filtering(
     df,
     conditions={
@@ -121,6 +131,7 @@ filtered_df = pandas_utils.data_filtering(
         }
     }
 )
+"""
 
 # 5. save_data 메서드 사용 예제:
 # CSV 저장 시 kwargs 활용

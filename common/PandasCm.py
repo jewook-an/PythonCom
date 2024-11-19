@@ -114,8 +114,7 @@ class PandasCm:
             
             if operation == 'normalize':
                 for col in columns:
-                    result_df[col] = (result_df[col] - result_df[col].min()) / \
-                                   (result_df[col].max() - result_df[col].min())
+                    result_df[col] = (result_df[col] - result_df[col].min()) / (result_df[col].max() - result_df[col].min())
             elif operation == 'standardize':
                 for col in columns:
                     result_df[col] = (result_df[col] - result_df[col].mean()) / result_df[col].std()
