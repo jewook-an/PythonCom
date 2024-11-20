@@ -8,11 +8,11 @@ class HTTPClient:
     """
     HTTP 요청을 처리하기 위한 재사용 가능한 클래스
     """
-    
+
     def __init__(self, base_url: str, timeout: int = 30):
         """
         HTTPClient 초기화
-        
+
         Args:
             base_url (str): API의 기본 URL
             timeout (int): 요청 타임아웃 (초)
@@ -142,4 +142,4 @@ class HTTPClient:
         """
         타임아웃 설정
         """
-        self.timeout = timeoutㅊ
+        self.timeout = timeout
