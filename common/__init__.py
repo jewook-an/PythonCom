@@ -1,7 +1,7 @@
 from .NumpyCm import NumpyClass
 from .PandasCm import PandasCm
 from .RequestsCm import HTTPClient
-from .SQLalchemyCm import DatabaseManager
+from .SQLalchemyCm import DatabaseManager, User
 from .FastapiCm import DatabaseConfig
 from .FastapiCm import Database
 from .FastapiCm import AppConfig

@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends, Security, status, Request, 
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Column, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
 from typing import Generic, TypeVar, Optional, List, Dict, Any
@@ -92,11 +92,11 @@ class AppFactory:
         db_config: DatabaseConfig = DatabaseConfig()
     ) -> tuple[FastAPI, Database]:
         app = FastAPI(title=title, description=description, version=version)
-        
+
         # 데이터베이스 초기화
         db = Database(db_config)
         db.create_tables()
-        
+
         # CORS 미들웨어 추가
         app.add_middleware(
             CORSMiddleware,
@@ -105,10 +105,10 @@ class AppFactory:
             allow_methods=["*"],
             allow_headers=["*"],
         )
-        
+
         # 로깅 미들웨어 추가
         #app.middleware("http")(RequestLoggingMiddleware())
-        
+
         # 예외 핸들러 등록
         app.add_exception_handler(
             HTTPException,
@@ -118,8 +118,19 @@ class AppFactory:
             Exception,
             # APIExceptionHandler.validation_exception_handler
         )
-        
+
         return app, db
+
+# 기본 모델 클래스들 추가
+class BaseDBModel(Base):
+    """기본 데이터베이스 모델"""
+    __abstract__ = True
+    id = Column(Integer, primary_key=True, index=True)
+
+class BaseSchema(BaseModel):
+    """기본 Pydantic 스키마"""
+    class Config:
+        from_attributes = True
 
 # 사용 예시:
 """
