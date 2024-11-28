@@ -14,13 +14,19 @@
 
 10.[Pillow (PIL)](#10-Pillow-Pil)
 
-###### install 내역
+###### install 내역 (최종 확인 필요)
 1. pip install numpy
 2. pip install pandas
 3. pip install requests
 4. pip install sqlalchemy
 5. pip install fastapi
 6. pip install jwt
+7. pip install celery
+8. pip install redis
+9. pip install pytest
+10. pip install matplotlib
+11. pip install pillow
+
 
 파이썬 라이브러리 중 유용하고 널리 사용되는  10가지를 선정
 
