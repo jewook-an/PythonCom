@@ -407,5 +407,8 @@
 
 [목차로](#목차)
 
-codesandbox연결시_설치
+* codesandbox연결시_설치
 ![alt text](./images/VSCode_Remote_SSH.png)
+
+* Python 빌드 및 테스트
+https://docs.github.com/ko/actions/use-cases-and-examples/building-and-testing/building-and-testing-python
