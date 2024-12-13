@@ -1,6 +1,9 @@
+from common.NumpyCm import NumpyClass
+from common.PandasCm import PandasCm
 
+######################################################################################
 # 컴포넌트 초기화
-numpy_utils = CommonNumpy()
+numpy_utils = NumpyClass()
 
 # 배열 생성
 array1 = numpy_utils.create_array([1, 2, 3, 4, 5])
@@ -13,14 +16,15 @@ result = numpy_utils.matrix_operations(array1, array2, 'add')
 stats = numpy_utils.statistical_analysis(array1)
 
 
+######################################################################################
 # 컴포넌트 초기화
-pandas_utils = CommonPandas()
+pandas_utils = PandasCm()
 
 # CSV 파일 읽기
 df = pandas_utils.read_data("data.csv", "csv")
 
 # 데이터 클리닝
-clean_df = pandas_utils.data_cleaning(df, 
+clean_df = pandas_utils.data_cleaning(df,
     operations=['remove_duplicates', 'fill_na'],
     fill_value=0
 )
@@ -34,3 +38,5 @@ transformed_df = pandas_utils.data_transformation(
 
 # 데이터 분석
 analysis_results = pandas_utils.data_analysis(transformed_df)
+
+######################################################################################

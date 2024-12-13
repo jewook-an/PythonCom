@@ -13,6 +13,9 @@ import logging
 from contextlib import contextmanager
 import time
 
+# Base 클래스 생성
+Base = declarative_base()
+
 # 제네릭 타입 변수 정의
 T = TypeVar("T")
 CreateSchemaType = TypeVar("CreateSchemaType")
