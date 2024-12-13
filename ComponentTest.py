@@ -21,7 +21,8 @@ stats = numpy_utils.statistical_analysis(array1)
 pandas_utils = PandasCm()
 
 # CSV 파일 읽기
-df = pandas_utils.read_data("data.csv", "csv")
+#df = pandas_utils.read_data("port.csv", "csv")
+df = pandas_utils.read_data("port.csv", "csv", encoding='utf-8', encoding_errors='ignore')
 
 # 데이터 클리닝
 clean_df = pandas_utils.data_cleaning(df,
