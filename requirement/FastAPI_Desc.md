@@ -1,13 +1,13 @@
 ### 목차
 
-1. [FastAPI주요기능](#1-FastAPI주요기능)
+1. [FastAPI주요기능](#1-FastAPI-주요기능)
 2. [FastAPI의 주요 기능 및 메서드 구현 예시](#2-FastAPI의-주요기능-및-메서드-구현예시)
 3. [FastAPI 사용 중요 기능 추천](#3-FastAPI-사용-중요-기능-추천)
 4. [참고 항목](#4-참고항목)
 
 10.[Pillow (PIL)](#10-Pillow-Pil)
 
-#### # FastAPI 주요 기능
+#### # FastAPI 주요기능
 
 ##### 1. 빠른 성능
 - FastAPI는 Starlette, Pydantic 기반 높은 성능 제공.
