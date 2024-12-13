@@ -11,7 +11,7 @@
 4. [참고 항목](#4-참고항목)
 
 
-#### # FastAPI 주요 기능(주요기능1)
+#### # 1. 주요기능1 : FastAPI 주요 기능
 
 ##### 1. 빠른 성능
 - FastAPI는 Starlette, Pydantic 기반 높은 성능 제공.
@@ -59,11 +59,10 @@ async def say_hello(name: str):
 - 파일 업로드 처리 / 백 그라운드 작업 지원 /  GraphQL 통합 / OpenTelemetry 지원
 
 
-주요기능2
+#### # 2. 주요기능2
 
 
 
 
-
-주요기능3
+#### # 3. 주요기능3
 
