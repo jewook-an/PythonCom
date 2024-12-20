@@ -10,7 +10,7 @@ pandas_utils = PandasCm()
 df = pandas_utils.read_data("port.csv", "csv", encoding='cp949')
 
 # 데이터 클리닝
-clean_df = pandas_utils.data_cleaning(df, 
+clean_df = pandas_utils.data_cleaning(df,
     operations=['remove_duplicates', 'fill_na'],
     fill_value=0
 )
@@ -26,6 +26,29 @@ transformed_df = pandas_utils.data_transformation(
 # 데이터 분석
 analysis_results = pandas_utils.data_analysis(transformed_df)
 
+# 데이터 변환2
+"""
+# operation
+    - normalize
+    - standardize
+    - encode_categorical
+    - datetime_convert
+    - log_transform
+    - box_cox
+    - one_hot
+    - binning
+    - winsorize
+"""
+transformed_df2 = pandas_utils.data_transformation_d(
+    clean_df,
+    # columns=['column1', 'column2'],
+    columns=['Source', 'IP'],
+    operation='encode_categorical'
+)
+
+# 데이터 분석
+analysis_results = pandas_utils.data_analysis(transformed_df2)
+
 """
 **kwargs 는 키워드 인자(keyword arguments)를 딕셔너리 형태로 받는 Python 특별 매개변수.
 Pandas 내 활용 실제예제 참고 : 예로, CommonPandas 클래스의 여러 메서드에서 **kwargs의 사용예제를 확인.
@@ -39,7 +62,7 @@ df1 = pandas_utils.read_data("port.csv", "csv", encoding='cp949')
 
 # kwargs를 사용한 다양한 옵션 지정
 df2 = pandas_utils.read_data(
-    "port.csv", 
+    "port.csv",
     "csv",
     #encoding='utf-8',                # 인코딩 지정
     encoding='cp949',                # 인코딩 지정
@@ -63,7 +86,7 @@ df3 = pandas_utils.read_data(
 # 2. data_cleaning 메서드 사용 예제:
 # 기본적인 데이터 클리닝
 clean_df1 = pandas_utils.data_cleaning(
-    df, 
+    df,
     operations=['remove_duplicates', 'fill_na']
 )
 

@@ -1,7 +1,7 @@
 from common import HTTPClient
 
 # base_url과 endpoint 분리
-base_url = 'http://data.ex.co.kr/openapi'
+base_url = 'http://data.ex.co.kr/openapi'   # 한국도록공사 공공데이터 포털 API : TEST 용
 client = HTTPClient(base_url)
 
 # 기본 인증 설정

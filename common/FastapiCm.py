@@ -3,7 +3,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy import create_engine, Column, Integer
-from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.ext.declarative import declarative_base       #Error > 'declarative_base' 함수를 import 하는 과정에서 이전 방식을 사용하여 발생한 문제
+from sqlalchemy.orm import declarative_base                     #정상
 from sqlalchemy.orm import Session, sessionmaker
 from typing import Generic, TypeVar, Optional, List, Dict, Any
 from pydantic import BaseModel, EmailStr, Field
@@ -26,7 +27,8 @@ class DatabaseConfig:
     """데이터베이스 설정"""
     def __init__(
         self,
-        db_url: str = "sqlite:///./test.db",
+        # db_url: str = "sqlite:///./test.db",
+        db_url: str = "postgresql://postgres:godlast@localhost/postgres",
         pool_size: int = 5,
         max_overflow: int = 10,
         pool_timeout: int = 30
@@ -84,6 +86,13 @@ class AppConfig:
 # [이전 코드와 동일한 부분...]
 # PageResponse, TokenResponse, BaseAPIRouter, RequestLoggingMiddleware 등은 그대로 유지
 
+# HTTPException 핸들러 정의(2024-12-20 Cursor 추가)
+async def http_exception_handler(request: Request, exc: HTTPException):
+   return JSONResponse(
+       status_code=exc.status_code,
+       content={"detail": exc.detail},
+   )
+
 class AppFactory:
     """애플리케이션 팩토리"""
     @staticmethod
@@ -111,8 +120,12 @@ class AppFactory:
 
         # 로깅 미들웨어 추가
         #app.middleware("http")(RequestLoggingMiddleware())
-
-        # 예외 핸들러 등록
+        # 예외 핸들러 등록 (2024-12-20 Cursor 수정)
+        app.add_exception_handler(HTTPException, http_exception_handler)  # 핸들러 추가
+        # 필요시 추가
+        #app.add_exception_handler(Exception, some_other_handler)  # 다른 핸들러도 추가 가능
+        """
+        # 예외 핸들러 등록 (Error )
         app.add_exception_handler(
             HTTPException,
             # APIExceptionHandler.http_exception_handler
@@ -121,6 +134,7 @@ class AppFactory:
             Exception,
             # APIExceptionHandler.validation_exception_handler
         )
+        """
 
         return app, db
 

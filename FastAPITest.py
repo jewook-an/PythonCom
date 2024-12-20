@@ -1,56 +1,64 @@
-# main.py
-from fastapi import FastAPI, Depends, APIRouter
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from pydantic import BaseModel
-# 서비스 생성을 위해 필요한 모듈 임포트
-from common.FastapiCm import BaseService, BaseDBModel, BaseSchema
-from models.UserModel import User, UserCreate, UserUpdate
+import pytest
+from fastapi.testclient import TestClient
+from .common.FastapiCm import AppFactory, DatabaseConfig
 
-# 데이터베이스 설정
-engine = create_engine("postgresql://user:password@localhost/dbname")
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
-
-# 애플리케이션 생성
-app = FastAPI(
-    title="User Management API",
-    description="User management system"
+# 애플리케이션과 데이터베이스 초기화
+app, db = AppFactory.create_app(
+    title="Test FastAPI App",
+    db_config=DatabaseConfig(db_url="postgresql://postgres:godlast@localhost/postgres")
 )
 
-# 데이터베이스 의존성 주입
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+# TestClient를 사용해 FastAPI 앱 테스트
+client = TestClient(app)
 
-# 사용자 서비스 생성
-user_service = BaseService[User, UserCreate, UserUpdate](User, get_db)
+@pytest.fixture(scope="module")
+def db_session():
+    """데이터베이스 세션을 제공하는 테스트용 의존성"""
+    with db.get_db() as session:
+        yield session
 
-# 라우터 생성 및 등록
-security_service = SecurityService(AppConfig())
+def test_app_health_check():
+    """애플리케이션이 제대로 실행되는지 확인"""
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {"message": "FastAPI App is running!"}
 
-user_router = APIRouter(
-    service=user_service,
-    security_service=security_service,
-    prefix="/users",
-    tags=["users"]
-)
-user_router.register(app)
+def test_create_user(db_session):
+    """사용자 생성 테스트"""
+    # 테스트 데이터
+    test_data = {
+        "username": "test_user2",
+        "email": "test_user2@example.com",
+        "password": "test_password2"
+    }
+    response = client.post("/users/", json=test_data)
+    assert response.status_code == 201
+    assert response.json()["email"] == test_data["email"]
 
-# 데이터베이스 의존성
-def get_db():
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
+def test_get_user(db_session):
+    """사용자 정보 가져오기 테스트"""
+    user_id = 1  # 예시 ID
+    response = client.get(f"/users/{user_id}")
+    assert response.status_code == 200
+    assert response.json()["id"] == user_id
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+def test_update_user(db_session):
+    """사용자 정보 업데이트 테스트"""
+    user_id = 1
+    update_data = {
+        "email": "updated_user@example.com"
+    }
+    response = client.put(f"/users/{user_id}", json=update_data)
+    assert response.status_code == 200
+    assert response.json()["email"] == update_data["email"]
+
+def test_delete_user(db_session):
+    """사용자 삭제 테스트"""
+    user_id = 1
+    response = client.delete(f"/users/{user_id}")
+    assert response.status_code == 204
+
+
+# if __name__ == "__main__":
+#     import uvicorn
+#     uvicorn.run(app, host="127.0.0.1", port=5432)
