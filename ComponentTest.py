@@ -1,3 +1,16 @@
+"""
+1. NumPy (완료)
+2. Pandas (완료)
+3. Requests
+4. SQLAlchemy
+5. FastAPI
+6. Matplotlib
+7. PyTest
+8. Celery
+9. Redis-py
+10.Pillow (PIL)
+"""
+
 from common.NumpyCm import NumpyClass
 from common.PandasCm import PandasCm
 
