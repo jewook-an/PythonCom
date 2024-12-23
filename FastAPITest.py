@@ -1,64 +1,108 @@
-import pytest
-from fastapi.testclient import TestClient
-from .common.FastapiCm import AppFactory, DatabaseConfig
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from pymongo import MongoClient
+from bson import ObjectId
+from typing import List
+import urllib
 
-# 애플리케이션과 데이터베이스 초기화
-app, db = AppFactory.create_app(
-    title="Test FastAPI App",
-    db_config=DatabaseConfig(db_url="postgresql://postgres:godlast@localhost/postgres")
-)
+# MongoDB Atlas 연결
+username = urllib.parse.quote_plus('TestUser')
+password = urllib.parse.quote_plus('godlast')   # ! : 33 / @ : 64
+# MONGO_URI = "mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority"
+MONGO_URI = f"mongodb+srv://{username}:{password}@cluster0.6ou1f.mongodb.net/cluster0?retryWrites=true&w=majority"
+DB_NAME = "Cluster0"
+COLLECTION_NAME = "testuser"
 
-# TestClient를 사용해 FastAPI 앱 테스트
-client = TestClient(app)
+client = MongoClient(MONGO_URI)
+db = client["test_db"]  # 사용할 데이터베이스 이름
+collection = db["test_collection"]  # 사용할 컬렉션 이름
 
-@pytest.fixture(scope="module")
-def db_session():
-    """데이터베이스 세션을 제공하는 테스트용 의존성"""
-    with db.get_db() as session:
-        yield session
+# FastAPI 앱 생성
+app = FastAPI()
 
-def test_app_health_check():
-    """애플리케이션이 제대로 실행되는지 확인"""
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json() == {"message": "FastAPI App is running!"}
+# 데이터 모델 정의
+class Item(BaseModel):
+    name: str
+    description: str = None
+    price: float
+    in_stock: bool
 
-def test_create_user(db_session):
-    """사용자 생성 테스트"""
-    # 테스트 데이터
-    test_data = {
-        "username": "test_user2",
-        "email": "test_user2@example.com",
-        "password": "test_password2"
-    }
-    response = client.post("/users/", json=test_data)
-    assert response.status_code == 201
-    assert response.json()["email"] == test_data["email"]
+class ItemResponse(Item):
+    id: str
 
-def test_get_user(db_session):
-    """사용자 정보 가져오기 테스트"""
-    user_id = 1  # 예시 ID
-    response = client.get(f"/users/{user_id}")
-    assert response.status_code == 200
-    assert response.json()["id"] == user_id
+# ObjectId 변환 헬퍼 함수
+def object_id_to_str(obj_id):
+    return str(obj_id)
 
-def test_update_user(db_session):
-    """사용자 정보 업데이트 테스트"""
-    user_id = 1
-    update_data = {
-        "email": "updated_user@example.com"
-    }
-    response = client.put(f"/users/{user_id}", json=update_data)
-    assert response.status_code == 200
-    assert response.json()["email"] == update_data["email"]
+# CRUD 엔드포인트 구현
+@app.post("/items/", response_model=ItemResponse)
+async def create_item(item: Item):
+    item_dict = item.dict()
+    result = collection.insert_one(item_dict)
+    item_dict["id"] = object_id_to_str(result.inserted_id)
+    return item_dict
 
-def test_delete_user(db_session):
-    """사용자 삭제 테스트"""
-    user_id = 1
-    response = client.delete(f"/users/{user_id}")
-    assert response.status_code == 204
+@app.get("/items/", response_model=List[ItemResponse])
+async def get_items():
+    items = list(collection.find())
+    for item in items:
+        item["id"] = object_id_to_str(item["_id"])
+        del item["_id"]
+    return items
 
+@app.get("/items/{item_id}", response_model=ItemResponse)
+async def get_item(item_id: str):
+    item = collection.find_one({"_id": ObjectId(item_id)})
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    item["id"] = object_id_to_str(item["_id"])
+    del item["_id"]
+    return item
 
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run(app, host="127.0.0.1", port=5432)
+@app.put("/items/{item_id}", response_model=ItemResponse)
+async def update_item(item_id: str, item: Item):
+    result = collection.find_one_and_update(
+        {"_id": ObjectId(item_id)},
+        {"$set": item.dict()},
+        return_document=True
+    )
+    if not result:
+        raise HTTPException(status_code=404, detail="Item not found")
+    result["id"] = object_id_to_str(result["_id"])
+    del result["_id"]
+    return result
+
+@app.delete("/items/{item_id}")
+async def delete_item(item_id: str):
+    result = collection.delete_one({"_id": ObjectId(item_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return {"message": "Item deleted successfully"}
+
+import httpx
+# 테스트 데이터 생성
+test_item = {
+    "name": "Sample Item",
+    "description": "This is a test item.",
+    "price": 9.99,
+    "in_stock": True
+}
+
+# create_item 테스트 함수
+def test_create_item():
+    response = httpx.post(f"{MONGO_URI}/items/", json=test_item)
+    if response.status_code == 200:
+        print("Test Passed!")
+        print("Response:", response.json())
+    else:
+        print("Test Failed!")
+        print("Status Code:", response.status_code)
+        print("Response:", response.text)
+
+if __name__ == "__main__":
+    # MongoDB 연결 확인
+    try:
+        test_create_item()
+    except Exception as e:
+        print(f"MongoDB 연결 실패: {str(e)}")
+        exit(1)
