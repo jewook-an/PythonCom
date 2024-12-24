@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Depends, HTTPException, status
+from fastapi import FastAPI, File, UploadFile, Depends, HTTPException, status, WebSocket
 from typing import List
 from strawberry.fastapi import GraphQLRouter
 import strawberry
@@ -117,3 +117,38 @@ def verify_token(token: str):
 async def protected_route(token: str = Depends(oauth2_scheme)):
     user = verify_token(token)
     return {"message": "Access granted", "user": user}
+
+
+###########################################################################
+# WebSocket 통신
+###########################################################################
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            # 메시지 수신
+            data = await websocket.receive_text()
+            # 메시지 송신
+            await websocket.send_text(f"Message received: {data}")
+    except Exception as e:
+        await websocket.close()
+
+# 서버 코드 (FastAPI 웹소켓)
+import asyncio
+import random
+app = FastAPI()
+
+@app.websocket("/ws/stocks")
+async def stock_price_websocket(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            # 주식 가격을 임의로 생성
+            stock_price = random.uniform(100, 500)
+            # 주식 가격을 클라이언트에 전송
+            await websocket.send_text(f"Stock Price: ${stock_price:.2f}")
+            # 1초 대기
+            await asyncio.sleep(1)
+    except Exception as e:
+        await websocket.close()

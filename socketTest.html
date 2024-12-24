@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Updates</title>
+</head>
+<body>
+    <h1>Real-time Stock Price</h1>
+    <div id="stock-price">Connecting...</div>
+
+    <script>
+        const stockPriceDiv = document.getElementById('stock-price');
+        const socket = new WebSocket('ws://localhost:8000/ws/stocks');
+
+        socket.onopen = function() {
+            stockPriceDiv.innerText = 'Connected to stock price server';
+        };
+
+        socket.onmessage = function(event) {
+            stockPriceDiv.innerText = event.data;
+        };
+
+        socket.onclose = function() {
+            stockPriceDiv.innerText = 'Disconnected from server';
+        };
+
+        socket.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+    </script>
+</body>
+</html>
