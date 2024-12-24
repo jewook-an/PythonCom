@@ -82,6 +82,8 @@ async def upload_multiple_files(files: List[UploadFile] = File(...)):
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 import strawberry
+# pip install strawberry >> Error
+# pip install strawberry-graphql >> 설치
 
 # GraphQL 스키마 정의
 @strawberry.type
@@ -152,15 +154,19 @@ def create_user(name: str, email: str, db: Session = Depends(get_db)):
 ```python
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+# >> pip install python-jose
 from jose import jwt
 
 # OAuth2 인증 스키마
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+# 비밀 키와 알고리즘 설정
+SECRET_KEY = "your_secret_key"
+ALGORITHM = "HS256"
 
 # 토큰 검증 함수
 def verify_token(token: str):
     try:
-        # 토큰 디코딩 로직
+        # 토큰 디코딩 로직 (JWT(JSON Web Token)를 해독 > 토큰에 포함된 정보를 추출)
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except:
@@ -175,6 +181,181 @@ async def protected_route(token: str = Depends(oauth2_scheme)):
     user = verify_token(token)
     return {"message": "Access granted", "user": user}
 ```
+```python
+# 토큰생성, 디코딩, 사용예제
+from jose import jwt
+
+# 비밀 키와 알고리즘 설정
+SECRET_KEY = "your_secret_key"
+ALGORITHM = "HS256"
+
+# 토큰 생성
+def create_token(data: dict):
+    token = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
+    return token
+
+# 토큰 디코딩
+def decode_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except jwt.JWTError:
+        raise ValueError("Invalid token")
+
+# 사용 예제
+if __name__ == "__main__":
+    # 토큰에 포함할 데이터
+    data = {"sub": "user_id", "name": "John Doe"}
+
+    # 토큰 생성
+    token = create_token(data)
+    print("Generated Token:", token)
+
+    # 토큰 디코딩
+    try:
+        decoded_data = decode_token(token)
+        print("Decoded Data:", decoded_data)
+    except ValueError as e:
+        print(e)
+```
+##### * 로직 설명
+1. 토큰 생성
+    - create_token 함수는 주어진 데이터를 JWT로 인코딩.
+    - 이때 SECRET_KEY와 ALGORITHM을 사용하여 토큰을 서명.
+2. 토큰 디코딩
+    - decode_token 함수는 주어진 JWT를 디코딩하여 원래의 데이터 추출
+    - 이 과정에서
+        - jwt.decode 함수는 토큰을 해독하고 서명을 검증.
+        - 서명이 유효하지 않거나 토큰이 변조된 경우 jwt.JWTError 예외 발생.
+
+###### * 주로 사용자 인증 및 권한 부여에 사용, 클라이언트와 서버 간 안전한 정보 전달.
+
+##### * 비밀 키 설정
+    - 임의 설정 가능
+        - 비밀 키는 사용자가 임의로 설정 할 수 있음.
+        - 그러나 보안상의 이유로 충분히 복잡하고 예측 불가능한 문자열을 사용이 좋다.
+        - 일반적으로 비밀 키는 환경 변수나 안전한 저장소에 보관하여 코드에 직접 노출되지 않도록 관리.
+
+##### * 알고리즘 종류와 사용 방법
+    - JWT는 다양한 서명 알고리즘을 지원, 보안 수준과 사용 용도가 다름.
+    - 다음은 일반적 사용되는 알고리즘
+        1. HS256 (HMAC with SHA-256)
+            대칭 키 알고리즘으로, 비밀 키를 사용하여 토큰을 서명하고 검증합니다. 비밀 키가 양쪽(서버와 클라이언트) 모두에 필요합니다. 간단한 구현과 빠른 성능이 장점입니다.
+        2. RS256 (RSA with SHA-256)
+            비대칭 키 알고리즘으로, 공개 키와 비밀 키 쌍을 사용합니다. 비밀 키로 서명하고 공개 키로 검증합니다. 보안성이 높고, 공개 키를 클라이언트에 안전하게 배포할 수 있는 장점이 있습니다.
+        3. ES256 (ECDSA with SHA-256)
+            비대칭 키 알고리즘으로, RSA보다 더 작은 키 크기로 비슷한 보안 수준을 제공합니다. 성능이 뛰어나고, 모바일 환경에서 자주 사용됩니다.
+
+* HS256 사용 예제:
+    - 위의 코드에서 사용한 것처럼, HS256 알고리즘은 비밀 키를 사용하여 토큰을 생성하고 검증합니다.
+
+* RS256 사용 예제:
+```python
+  from jose import jwt
+
+  # 공개 키와 비밀 키 설정
+  PRIVATE_KEY = "your_private_key"
+  PUBLIC_KEY = "your_public_key"
+  ALGORITHM = "RS256"
+
+  # 토큰 생성
+  def create_token(data: dict):
+      token = jwt.encode(data, PRIVATE_KEY, algorithm=ALGORITHM)
+      return token
+
+  # 토큰 디코딩
+  def decode_token(token: str):
+      try:
+          payload = jwt.decode(token, PUBLIC_KEY, algorithms=[ALGORITHM])
+          return payload
+      except jwt.JWTError:
+          raise ValueError("Invalid token")
+```
+1. RSA 키 쌍 생성
+    - cryptography 라이브러리를 설치
+    - 그런 다음, RSA 키 쌍을 생성.
+```python
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import serialization
+
+# RSA 키 쌍 생성
+private_key = rsa.generate_private_key(
+    public_exponent=65537,
+    key_size=2048
+)
+
+# 비밀 키를 PEM 형식으로 직렬화
+private_pem = private_key.private_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PrivateFormat.TraditionalOpenSSL,
+    encryption_algorithm=serialization.NoEncryption()
+)
+
+# 공개 키를 PEM 형식으로 직렬화
+public_key = private_key.public_key()
+public_pem = public_key.public_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PublicFormat.SubjectPublicKeyInfo
+)
+
+# 키를 파일에 저장하거나 변수에 저장
+with open("private_key.pem", "wb") as f:
+    f.write(private_pem)
+
+with open("public_key.pem", "wb") as f:
+    f.write(public_pem)
+```
+2. JWT 생성 및 검증
+    - 생성한 키를 사용하여 JWT를 생성, 검증.
+```python
+from jose import jwt
+
+# 키 파일에서 읽기
+with open("private_key.pem", "rb") as f:
+    private_key = f.read()
+
+with open("public_key.pem", "rb") as f:
+    public_key = f.read()
+
+ALGORITHM = "RS256"
+
+# 토큰 생성
+def create_token(data: dict):
+    token = jwt.encode(data, private_key, algorithm=ALGORITHM)
+    return token
+
+# 토큰 디코딩
+def decode_token(token: str):
+    try:
+        payload = jwt.decode(token, public_key, algorithms=[ALGORITHM])
+        return payload
+    except jwt.JWTError:
+        raise ValueError("Invalid token")
+
+# 사용 예제
+if __name__ == "__main__":
+    # 토큰에 포함할 데이터
+    data = {"sub": "user_id", "name": "John Doe"}
+
+    # 토큰 생성
+    token = create_token(data)
+    print("Generated Token:", token)
+
+    # 토큰 디코딩
+    try:
+        decoded_data = decode_token(token)
+        print("Decoded Data:", decoded_data)
+    except ValueError as e:
+        print(e)
+```
+##### * 설명
+    - RSA 키 생성
+        cryptography 라이브러리를 사용하여 RSA 키 쌍을 생성합니다. 생성된 키는 PEM 형식으로 직렬화하여 파일에 저장하거나 메모리에 보관할 수 있습니다.
+    - JWT 생성 및 검증
+        python-jose 라이브러리를 사용하여 RSA 비밀 키로 JWT를 서명하고, 공개 키로 검증합니다. 이 과정은 비대칭 암호화를 사용하여 보안을 강화합니다.
+
+* 비대칭 암호화 사용, JWT를 안전하게 관리할 수 있게 함. 공개 키는 클라이언트에 배포하여 검증에 사용, 비밀 키는 서버에서 안전하게 보관.
+
 
 ##### 5. WebSocket 통신
 ```python

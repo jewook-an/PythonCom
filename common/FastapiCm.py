@@ -3,7 +3,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy import create_engine, Column, Integer
-from sqlalchemy.orm import declarative_base
+# from sqlalchemy.ext.declarative import declarative_base       #Error > 'declarative_base' 함수를 import 하는 과정에서 이전 방식을 사용하여 발생한 문제
+from sqlalchemy.orm import declarative_base                     #정상
 from sqlalchemy.orm import Session, sessionmaker
 from typing import Generic, TypeVar, Optional, List, Dict, Any
 from pydantic import BaseModel, EmailStr, Field
@@ -124,7 +125,7 @@ class AppFactory:
         # 필요시 추가
         #app.add_exception_handler(Exception, some_other_handler)  # 다른 핸들러도 추가 가능
         """
-        # 예외 핸들러 등��� (Error )
+        # 예외 핸들러 등록 (Error )
         app.add_exception_handler(
             HTTPException,
             # APIExceptionHandler.http_exception_handler
