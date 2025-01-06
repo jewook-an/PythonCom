@@ -12,14 +12,15 @@ import base64
 
 class PlotConfig:
     """플롯 설정 클래스"""
-    DEFAULT_STYLE = 'seaborn'
+    #DEFAULT_STYLE = 'seaborn' # Error : style must be one of white, dark, whitegrid, darkgrid, ticks
+    DEFAULT_STYLE = 'darkgrid'
     DEFAULT_FIGSIZE = (10, 6)
     DEFAULT_DPI = 100
-    DEFAULT_COLORS = sns.color_palette('husl', 8)
-    
+    DEFAULT_COLORS = sns.color_palette('husl', 8)   #['b', 'g', 'r', 'c', 'm', 'y', 'k']
+
 class Visualization:
     """시각화 유틸리티 클래스"""
-    
+
     def __init__(
         self,
         style: str = PlotConfig.DEFAULT_STYLE,
@@ -28,13 +29,14 @@ class Visualization:
     ):
         """
         시각화 유틸리티 초기화
-        
+
         Args:
             style: matplotlib 스타일
             figsize: 그림 크기
             dpi: 해상도
         """
-        plt.style.use(style)
+        # plt.style.use(style)
+        sns.set_theme(style=style)  # seaborn 스타일 설정
         self.figsize = figsize
         self.dpi = dpi
         self.colors = PlotConfig.DEFAULT_COLORS
@@ -58,7 +60,7 @@ class Visualization:
     ) -> Figure:
         """
         선 그래프 생성
-        
+
         Args:
             data: 데이터프레임 또는 딕셔너리
             x: x축 컬럼명
@@ -71,17 +73,17 @@ class Visualization:
             style: 선 스타일
         """
         fig, ax = self.create_figure()
-        
+
         if isinstance(data, dict):
             data = pd.DataFrame(data)
-        
+
         if isinstance(y, str):
             y = [y]
-            
+
         for idx, col in enumerate(y):
-            ax.plot(data[x], data[col], label=col, color=self.colors[idx], 
+            ax.plot(data[x], data[col], label=col, color=self.colors[idx],
                    linestyle=style if style else '-')
-            
+
         self._customize_plot(ax, title, xlabel, ylabel, legend, grid)
         return fig
 
@@ -99,10 +101,10 @@ class Visualization:
     ) -> Figure:
         """산점도 생성"""
         fig, ax = self.create_figure()
-        
+
         if isinstance(data, dict):
             data = pd.DataFrame(data)
-            
+
         ax.scatter(data[x], data[y], c=color, s=size, alpha=alpha)
         self._customize_plot(ax, title, xlabel, ylabel)
         return fig
@@ -120,15 +122,15 @@ class Visualization:
     ) -> Figure:
         """막대 그래프 생성"""
         fig, ax = self.create_figure()
-        
+
         if isinstance(data, dict):
             data = pd.DataFrame(data)
-            
+
         if orientation == 'vertical':
             ax.bar(data[x], data[y], color=color if color else self.colors[0])
         else:
             ax.barh(data[x], data[y], color=color if color else self.colors[0])
-            
+
         self._customize_plot(ax, title, xlabel, ylabel)
         return fig
 
@@ -144,10 +146,10 @@ class Visualization:
     ) -> Figure:
         """히스토그램 생성"""
         fig, ax = self.create_figure()
-        
-        ax.hist(data, bins=bins, density=density, 
+
+        ax.hist(data, bins=bins, density=density,
                 color=color if color else self.colors[0], alpha=0.7)
-        
+
         self._customize_plot(ax, title, xlabel, ylabel)
         return fig
 
@@ -162,10 +164,10 @@ class Visualization:
     ) -> Figure:
         """박스 플롯 생성"""
         fig, ax = self.create_figure()
-        
+
         if isinstance(data, dict):
             data = pd.DataFrame(data)
-            
+
         sns.boxplot(data=data, x=x, y=y, ax=ax)
         self._customize_plot(ax, title, xlabel, ylabel)
         return fig
@@ -180,12 +182,12 @@ class Visualization:
     ) -> Figure:
         """히트맵 생성"""
         fig, ax = self.create_figure()
-        
+
         if isinstance(data, pd.DataFrame):
             data_matrix = data
         else:
             data_matrix = pd.DataFrame(data)
-            
+
         sns.heatmap(data_matrix, cmap=cmap, annot=annot, fmt=fmt, ax=ax)
         ax.set_title(title)
         plt.tight_layout()
@@ -201,7 +203,7 @@ class Visualization:
     ) -> Figure:
         """파이 차트 생성"""
         fig, ax = self.create_figure()
-        
+
         ax.pie(values, labels=labels, autopct=autopct, startangle=startangle,
                colors=self.colors)
         ax.axis('equal')
@@ -220,22 +222,22 @@ class Visualization:
     ) -> Figure:
         """시계열 그래프 생성"""
         fig, ax = self.create_figure()
-        
+
         if isinstance(data, dict):
             data = pd.DataFrame(data)
-        
+
         if isinstance(value_columns, str):
             value_columns = [value_columns]
-            
+
         data[date_column] = pd.to_datetime(data[date_column])
-        
+
         for idx, col in enumerate(value_columns):
-            ax.plot(data[date_column], data[col], label=col, 
+            ax.plot(data[date_column], data[col], label=col,
                    color=self.colors[idx])
-            
+
         ax.xaxis.set_major_formatter(mdates.DateFormatter(date_format))
         plt.xticks(rotation=45)
-        
+
         self._customize_plot(ax, title, xlabel, ylabel, legend=True, grid=True)
         return fig
 
@@ -247,11 +249,11 @@ class Visualization:
         """상관관계 행렬 시각화"""
         if isinstance(data, np.ndarray):
             data = pd.DataFrame(data)
-            
+
         corr_matrix = data.corr()
-        
+
         fig, ax = self.create_figure()
-        sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1, 
+        sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1,
                    center=0, ax=ax)
         ax.set_title(title)
         plt.tight_layout()

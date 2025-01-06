@@ -6,14 +6,14 @@ from unittest.mock import patch, MagicMock
 from celery import Celery
 from celery.exceptions import SoftTimeLimitExceeded
 
-# 원본 모듈 가져오기
+# 원본 모듈 가져오기 (상대경로설정 >> main.py 참고)
 #from common import CeleryCm as cf # 타 경로에 있는 부분 Common 모듈 가져오지 못함
-from PythonCom.common import CeleryCm as cf
+from common import CeleryCm as cf
 
 class TestRedisManager(unittest.TestCase):
     def setUp(self):
         # 프로덕션 데이터에 방해되지 않도록 테스트 데이터베이스 사용
-        self.redis_manager = cf.RedisManager(db=15)
+        self.redis_manager = cf.RedisManager(db=15, password='redisPass')
 
     def test_set_and_get_task_status(self):
         task_id = 'test_task_123'
@@ -22,6 +22,8 @@ class TestRedisManager(unittest.TestCase):
             'started_at': str(time.time())
         }
 
+        if not isinstance(status, dict):
+            raise ValueError("status must be a dictionary")
         # 작업 상태 설정
         self.redis_manager.set_task_status(task_id, status)
 
@@ -68,8 +70,8 @@ class TestBaseTask(unittest.TestCase):
         self.base_task = cf.BaseTask()
         self.base_task.name = 'test_base_task'
 
-    @patch('celery_framework.RedisManager.set_task_status')
-    @patch('celery_framework.TaskLogger.log_task_success')
+    @patch('common.CeleryCm.RedisManager.set_task_status')
+    @patch('common.CeleryCm.TaskLogger.log_task_success')
     def test_on_success(self, mock_log_success, mock_set_task_status):
         task_id = 'test_success_task'
         retval = {'result': 'success'}
@@ -121,7 +123,7 @@ class TestTaskScheduler(unittest.TestCase):
 
 class TestTaskMonitor(unittest.TestCase):
     def setUp(self):
-        self.redis_manager = cf.RedisManager(db=15)
+        self.redis_manager = cf.RedisManager(db=15, password='redisPass')
         self.task_monitor = cf.TaskMonitor(self.redis_manager)
 
     def test_get_task_info(self):

@@ -5,7 +5,7 @@ from .SQLalchemyCm import DatabaseManager, User
 from .FastapiCm import DatabaseConfig, Database, AppConfig, AppFactory
 #from .FastapiCm import *
 
-#from .MatplotlibCm import MatplotlibCm
+from .MatplotlibCm import Visualization
 #from .PyTestCm import PyTestCm
 #from .CeleryCm import CeleryCm
 #from .RedispyCm import RedispyCm

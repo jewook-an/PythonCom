@@ -1,7 +1,11 @@
-from common import MatplotlibCm
+from common import Visualization
+import pandas as pd
+import numpy as np
 
 # 시각화 유틸리티 초기화
-viz = common.MatplotlibCm.Visualization(style='seaborn', figsize=(12, 6))
+# matplotlib에서 'seaborn'스타일 없다. 사용시 라이브러리 설치, 스타일 matplotlib에 등록.
+# viz = Visualization(style='seaborn', figsize=(12, 6))
+viz = Visualization()   # PlotConfig내 Style, figsize 선 설정됨
 
 # 샘플 데이터
 data = {

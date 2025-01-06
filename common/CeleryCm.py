@@ -15,19 +15,19 @@ class CeleryConfig:
     # Celery 브로커 및 백엔드 설정
     BROKER_URL = 'redis://localhost:6379/0'
     RESULT_BACKEND = 'redis://localhost:6379/1'
-    
+
     # 작업 설정
     CELERY_TASK_SERIALIZER = 'json'
     CELERY_RESULT_SERIALIZER = 'json'
     CELERY_ACCEPT_CONTENT = ['json']
     CELERY_TIMEZONE = 'Asia/Seoul'
     CELERY_ENABLE_UTC = True
-    
+
     # 작업 제한 설정
     CELERY_TASK_SOFT_TIME_LIMIT = 600  # 10분
     CELERY_TASK_TIME_LIMIT = 1200      # 20분
     CELERY_TASK_MAX_RETRIES = 3
-    
+
     # 동시성 설정
     CELERYD_CONCURRENCY = 4
     CELERYD_PREFETCH_MULTIPLIER = 1
@@ -37,13 +37,26 @@ app = Celery('tasks')
 app.config_from_object(CeleryConfig)
 
 # Redis 연결 관리
+# Redis 3.0 >> hset 호출 에러 : ERR wrong number of arguments for 'hset' command in redis (버전4 미만인지 확인하고, 그 이상으로 업데이트)
 class RedisManager:
-    def __init__(self, host='localhost', port=6379, db=2):
-        self.redis_client = redis.Redis(host=host, port=port, db=db)
-    
-    def set_task_status(self, task_id: str, status: Dict[str, Any]):
+    # Redis Password 반영전
+    # def __init__(self, host='localhost', port=6379, db=2):
+    #     self.redis_client = redis.Redis(host=host, port=port, db=db)
+
+    # Redis Password 반영후
+    def __init__(self, db=0, password=None):
+        self.redis_client = redis.StrictRedis(
+            host='localhost',
+            port=6379,
+            db=db,
+            password=password
+        )
+
+    def set_task_status(self, task_id, status):
+        if not isinstance(status, dict):
+            raise ValueError("status must be a dictionary")
         self.redis_client.hset(f"task_status:{task_id}", mapping=status)
-    
+
     def get_task_status(self, task_id: str) -> Dict[str, Any]:
         return {k.decode(): v.decode() for k, v in self.redis_client.hgetall(f"task_status:{task_id}").items()}
 
@@ -52,37 +65,37 @@ class TaskLogger:
     def __init__(self, name: str):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.INFO)
-        
+
         # 파일 핸들러 추가
         handler = logging.FileHandler(f'celery_tasks_{name}.log')
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
-    
+
     def log_task_start(self, task_id: str, args: tuple, kwargs: dict):
         self.logger.info(f"Task {task_id} started with args: {args}, kwargs: {kwargs}")
-    
+
     def log_task_success(self, task_id: str, result: Any):
         self.logger.info(f"Task {task_id} completed successfully with result: {result}")
-    
+
     def log_task_failure(self, task_id: str, exc: Exception, traceback: str):
         self.logger.error(f"Task {task_id} failed: {exc}\n{traceback}")
 
 # 기본 작업 클래스
 class BaseTask(Task):
     abstract = True
-    
+
     def __init__(self):
         self.logger = TaskLogger(self.name)
         self.redis_manager = RedisManager()
-    
+
     def on_success(self, retval, task_id, args, kwargs):
         self.logger.log_task_success(task_id, retval)
         self.redis_manager.set_task_status(task_id, {
             'status': 'SUCCESS',
             'result': json.dumps(retval) if retval is not None else None
         })
-    
+
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         self.logger.log_task_failure(task_id, exc, einfo.traceback)
         self.redis_manager.set_task_status(task_id, {
@@ -121,7 +134,7 @@ def measure_performance(func):
 class TaskScheduler:
     def __init__(self, app: Celery):
         self.app = app
-    
+
     def schedule_task(self, task, schedule: Dict[str, Any], name: Optional[str] = None):
         self.app.conf.beat_schedule[name or task.name] = {
             'task': task.name,
@@ -129,7 +142,7 @@ class TaskScheduler:
             'args': schedule.get('args', ()),
             'kwargs': schedule.get('kwargs', {})
         }
-    
+
     def _parse_schedule(self, schedule: Dict[str, Any]) -> Any:
         if 'crontab' in schedule:
             return crontab(**schedule['crontab'])
@@ -142,12 +155,12 @@ class TaskScheduler:
 class TaskMonitor:
     def __init__(self, redis_manager: RedisManager):
         self.redis_manager = redis_manager
-    
+
     def get_task_info(self, task_id: str) -> Dict[str, Any]:
         return self.redis_manager.get_task_status(task_id)
-    
+
     def get_active_tasks(self) -> list[str]:
-        return [k.decode().split(':')[1] for k in 
+        return [k.decode().split(':')[1] for k in
                 self.redis_manager.redis_client.keys('task_status:*')]
 
 # 샘플 작업 정의
@@ -206,9 +219,9 @@ def task_failure_handler(sender=None, exception=None, **kwargs):
 if __name__ == '__main__':
     # 작업 실행
     result = sample_task.delay(10, 20)
-    
+
     # 작업 모니터링
     monitor = TaskMonitor(RedisManager())
     task_status = monitor.get_task_info(result.id)
-    
+
     print(f"Task status: {task_status}")
