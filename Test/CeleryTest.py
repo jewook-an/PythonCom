@@ -22,8 +22,6 @@ class TestRedisManager(unittest.TestCase):
             'started_at': str(time.time())
         }
 
-        if not isinstance(status, dict):
-            raise ValueError("status must be a dictionary")
         # 작업 상태 설정
         self.redis_manager.set_task_status(task_id, status)
 

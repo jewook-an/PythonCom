@@ -53,7 +53,7 @@ class RedisManager:
         )
 
     def set_task_status(self, task_id, status):
-        if not isinstance(status, dict):
+        if not isinstance(status, dict):    # status dictionary 체크 Validation 추가
             raise ValueError("status must be a dictionary")
         self.redis_client.hset(f"task_status:{task_id}", mapping=status)
 
@@ -220,8 +220,9 @@ if __name__ == '__main__':
     # 작업 실행
     result = sample_task.delay(10, 20)
 
-    # 작업 모니터링
+    # 작업 모니터링 : RedisManager(db=15, password='redisPass')
     monitor = TaskMonitor(RedisManager())
+
     task_status = monitor.get_task_info(result.id)
 
     print(f"Task status: {task_status}")

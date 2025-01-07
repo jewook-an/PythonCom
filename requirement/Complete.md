@@ -10,10 +10,12 @@
         * 필요항목 : 각각 Model 만들기
 5. FastAPI (진행중)
     -
+6. Matplotlib (진행중)
 
-8. Celery (진행중)
+8. Celery (완료)
+    - Redis Server 생성, Test
+
 <!--
-6. Matplotlib
 7. PyTest
 9. Redis-py
 10.Pillow (PIL)
