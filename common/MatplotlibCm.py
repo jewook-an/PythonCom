@@ -300,6 +300,10 @@ class Visualization:
         buffer.seek(0)
         return base64.b64encode(buffer.getvalue()).decode()
 
+    def show_plot(self, fig):
+        """그래프를 화면에 표시합니다."""
+        plt.show()
+
     def close_plot(self, fig: Figure) -> None:
         """플롯 메모리 해제"""
         plt.close(fig)

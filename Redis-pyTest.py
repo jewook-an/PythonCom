@@ -1,4 +1,14 @@
+from PythonCom.common import RedispyCm
+"""
+from PythonCom.common import RedispyCm
+>> pytest filename.py : 정상    >> 2 Warning
+>> python filename.py : 에러    >> No module named 'PythonCom'
+
 from common import RedispyCm
+>> pytest filename.py : 에러    >> No module named 'common'
+>> python filename.py : 정상
+"""
+
 from typing import Dict, Any
 
 def example_usage():
