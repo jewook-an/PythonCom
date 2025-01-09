@@ -31,3 +31,12 @@
 9. Redis-py
 10.Pillow (PIL)
 -->
+
+## 별도 TEST
+1. APT TEST
+    - python Test/co2_emission.py
+    - python Test/covid_stats_via_xpath.py
+
+2. 구글 Crawling 테스트
+    - 구글검색 : python Test/crawl_google_results.py python programming
+    - 학술자료 인용 Get : crawl_google_scholar_citation.py (제목,출판연도,저널의권,페이지)
