@@ -27,9 +27,17 @@
 8. Celery (완료)
     - Redis Server 생성, Test
 
+9. Redis-py (완료)
+    - RedisCacheTest.py     : Redis Cache Test
+    - Redis-pyTest.py
+        - 캐시 사용 예시 : 사용자 ID > 사용자 데이터 반환. Redis캐시 사용, 300초 동안 결과를 저장
+        - 락 사용 예시 : my_lock 이름의 락 생성, 이를 사용해 크리티컬 섹션 보호. 실제 작업이 수행되지 않지만, 락을 통한 동시성 문제를 방지할 수 있다.
+        - 큐 사용 예시 : my_queue 이름의 큐 생성, 작업을 큐에 추가후, 큐에서 작업을 꺼내는 예시.
+        - 발행/구독 사용 예시 : my_channel 채널에 메시지를 구독, 메시지 수신시 message_handler 함수 호출됨. 또, 해당 채널에 메시지 발행 예시도 포함돼 있음.
+        - 속도 제한 사용 예시 : api_calls 이름의 속도 제한기 생성, 1시간에 100번 호출 허용. 특정 사용자의 호출여부 확인 예시.
+
+10.Pillow (PIL) (진행중)
 <!--
-9. Redis-py
-10.Pillow (PIL)
 -->
 
 ## 별도 TEST

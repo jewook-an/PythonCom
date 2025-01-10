@@ -1,4 +1,4 @@
-from PythonCom.common import RedispyCm
+from common import RedispyCm
 """
 from PythonCom.common import RedispyCm
 >> pytest filename.py : 정상    >> 2 Warning
