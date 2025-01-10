@@ -23,7 +23,7 @@
 
     - staticmethod
         - load_image(source: Union[str, bytes, Image.Image]) : 이미지 로드
-        - save_image(self, image: Image.Image, path: str, **kwargs) : 이미지 저장
+    - save_image(self, image: Image.Image, path: str, **kwargs) : 이미지 저장
 
 3. ImageResizer : 이미지 크기 조정
     - staticmethod
