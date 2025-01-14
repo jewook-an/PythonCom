@@ -36,9 +36,8 @@
         - 발행/구독 사용 예시 : my_channel 채널에 메시지를 구독, 메시지 수신시 message_handler 함수 호출됨. 또, 해당 채널에 메시지 발행 예시도 포함돼 있음.
         - 속도 제한 사용 예시 : api_calls 이름의 속도 제한기 생성, 1시간에 100번 호출 허용. 특정 사용자의 호출여부 확인 예시.
 
-10.Pillow (PIL) (진행중)
-<!--
--->
+10.Pillow (PIL) (완료)
+    - 참고 : https://realpython.com/image-processing-with-the-python-pillow-library/
 
 ## 별도 TEST
 1. APT TEST

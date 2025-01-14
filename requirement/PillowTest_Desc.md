@@ -70,13 +70,13 @@
 
     - process_directory(self, input_dir: str, output_dir: str, operations: List[Dict[str, Any]]): 디렉토리 내 이미지 일괄 처리
 
-10. class ImageOptimizer : 이미지 최적화
+9. class ImageOptimizer : 이미지 최적화
     - staticmethod
         - compress_image(image: Image.Image, quality: int = 85) : 이미지 압축
         - convert_format(image: Image.Image, format: str = 'WEBP') : 형식 변환
         - reduce_colors(image: Image.Image, colors: int = 256) : 색상 수 감소
 
-11. class ImageFramework : 통합 이미지 처리 프레임워크
+10. class ImageFramework : 통합 이미지 처리 프레임워크
     ```
     def __init__(self, config: Optional[ImageConfig] = None):
         self.config = config or ImageConfig()
