@@ -14,6 +14,20 @@
 
 10.[Pillow (PIL)](#10-Pillow-Pil)
 
+##### 추가 항목
+
+ - PyGame
+   - https://sylagape1231.tistory.com/25
+ - PyBrain
+ - Statsmodels
+ - TensorFlow
+ - Seaborn
+ - Scrapy
+ - PyTorch
+ - SciPy
+ - Keras
+ - Scikit-learn
+
 ###### install 내역 (최종 확인 필요)
 1. pip install numpy
 2. pip install pandas
