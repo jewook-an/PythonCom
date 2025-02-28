@@ -18,6 +18,7 @@
 
  - PyGame
    - https://sylagape1231.tistory.com/25
+   - https://pygame.readthedocs.io/en/latest/1_intro/intro.html
  - PyBrain
  - Statsmodels
  - TensorFlow

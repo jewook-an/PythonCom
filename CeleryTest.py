@@ -2,17 +2,22 @@ import unittest
 import time
 import json
 import redis
+import os
 from unittest.mock import patch, MagicMock
 from celery import Celery
 from celery.exceptions import SoftTimeLimitExceeded
 
-# 원본 모듈 가져오기
-from common import CeleryCm as cf
+# 원본 모듈 가져오기 : common/__init__.py 내 from .CeleryCm import CeleryCm 작성시 오류 발생함
+# from common import CeleryCm as cf
+import common.CeleryCm as cf
 
+# 테스트 실행시 터미널 창 : E........ >> E: 에러, .: 성공 (위에서 부터 순차적으로 실행)
 class TestRedisManager(unittest.TestCase):
     def setUp(self):
+        # 환경 변수에서 Redis 비밀번호 가져오기
+        redis_password = os.getenv('REDIS_PASSWORD', 'default_password')
         # 프로덕션 데이터에 방해되지 않도록 테스트 데이터베이스 사용
-        self.redis_manager = cf.RedisManager(db=15)
+        self.redis_manager = cf.RedisManager(db=15, password=redis_password)
 
     def test_set_and_get_task_status(self):
         task_id = 'test_task_123'
@@ -48,7 +53,9 @@ class TestTaskLogger(unittest.TestCase):
         self.task_logger.log_task_start(task_id, args, kwargs)
 
         mock_log_info.assert_called_once_with(
-            f"작업 {task_id} 시작: 인자: {args}, 키워드 인자: {kwargs}"
+            # 오류(AssertionError) : 예상된 호출과 실제 호출이 일치하지 않아 발생 => 영문 그대로 사용해야함
+            # f"작업 {task_id} 시작: 인자: {args}, 키워드 인자: {kwargs}"
+            f"Task {task_id} started with args: {args}, kwargs: {kwargs}"
         )
 
     @patch('logging.Logger.info')
@@ -59,7 +66,8 @@ class TestTaskLogger(unittest.TestCase):
         self.task_logger.log_task_success(task_id, result)
 
         mock_log_info.assert_called_once_with(
-            f"작업 {task_id} 성공적으로 완료: 결과: {result}"
+            # f"작업 {task_id} 성공적으로 완료: 결과: {result}"
+            f"Task {task_id} completed successfully with result: {result}"
         )
 
 class TestBaseTask(unittest.TestCase):
@@ -67,8 +75,9 @@ class TestBaseTask(unittest.TestCase):
         self.base_task = cf.BaseTask()
         self.base_task.name = 'test_base_task'
 
-    @patch('celery_framework.RedisManager.set_task_status')
-    @patch('celery_framework.TaskLogger.log_task_success')
+    # common.CeleryCm >> 위에서 cf 로 처리 했지만 cf 처리 불가(@patch 에서는 사용불가한 듯)
+    @patch('common.CeleryCm.RedisManager.set_task_status')
+    @patch('common.CeleryCm.TaskLogger.log_task_success')
     def test_on_success(self, mock_log_success, mock_set_task_status):
         task_id = 'test_success_task'
         retval = {'result': 'success'}
@@ -120,7 +129,7 @@ class TestTaskScheduler(unittest.TestCase):
 
 class TestTaskMonitor(unittest.TestCase):
     def setUp(self):
-        self.redis_manager = cf.RedisManager(db=15)
+        self.redis_manager = cf.RedisManager(db=15, password='redisPass')
         self.task_monitor = cf.TaskMonitor(self.redis_manager)
 
     def test_get_task_info(self):
@@ -219,4 +228,3 @@ celery -A tasks worker --loglevel=info
 
 # Celery Beat 시작 (주기적 작업용)
 celery -A tasks beat --loglevel=info
-"""
